@@ -12,7 +12,7 @@ router.get('/', auth, async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch bookings" });
   }
-});
+}); 
 
 // POST /api/bookings
 router.post('/', auth, async (req, res) => {
