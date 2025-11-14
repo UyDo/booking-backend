@@ -4,11 +4,9 @@ const auth = require('../middleware/auth');
 const router = express.Router();
 
 // GET /api/bookings
-router.get('/', auth, async (req, res) => {
-  //const [rows] = await pool.query('SELECT * FROM bookings ORDER BY id DESC LIMIT 100');
-  //res.json(rows);
+router.get('/', auth, async (req, res) => { 
   try {
-    const [rows] = await db.query("SELECT * FROM bookings");
+    const [rows] = await pool.query("SELECT * FROM bookings");
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -18,12 +16,21 @@ router.get('/', auth, async (req, res) => {
 
 // POST /api/bookings
 router.post('/', auth, async (req, res) => {
-  const { customer_id, staff_id, service_id, start_at, duration_min } = req.body;
-  const [result] = await pool.query(
-    'INSERT INTO bookings (customer_id, staff_id, service_id, start_at, duration_min, status) VALUES (?, ?, ?, ?, ?, ?)',
-    [customer_id, staff_id, service_id, start_at, duration_min, 'pending']
-  );
-  res.json({ id: result.insertId });
+  try {
+    const { customer_id, staff_id, service_id, start_at, duration_min } = req.body;
+
+    const [result] = await pool.query(
+      `INSERT INTO bookings (customer_id, staff_id, service_id, start_at, duration_min, status) 
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [customer_id, staff_id, service_id, start_at, duration_min, 'pending']
+    );
+
+    res.json({ id: result.insertId });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to create booking" });
+  }
 });
 
 module.exports = router;
