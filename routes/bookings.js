@@ -5,8 +5,15 @@ const router = express.Router();
 
 // GET /api/bookings
 router.get('/', auth, async (req, res) => {
-  const [rows] = await pool.query('SELECT * FROM bookings ORDER BY id DESC LIMIT 100');
-  res.json(rows);
+  //const [rows] = await pool.query('SELECT * FROM bookings ORDER BY id DESC LIMIT 100');
+  //res.json(rows);
+  try {
+    const [rows] = await db.query("SELECT * FROM bookings");
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch bookings" });
+  }
 });
 
 // POST /api/bookings
