@@ -5,7 +5,7 @@ const router = express.Router();
 
 // GET /api/bookings
 router.get('/', auth, async (req, res) => {
-  const [rows] = await pool.query('SELECT * FROM bookings ORDER BY start_at DESC LIMIT 100');
+  const [rows] = await pool.query('SELECT * FROM bookings ORDER BY id DESC LIMIT 100');
   res.json(rows);
 });
 
